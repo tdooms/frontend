@@ -38,7 +38,7 @@ impl Field for ToggleField {
         self.value != self.initial
     }
 
-    fn view(&self, disabled: bool) -> Node<Self::Msg> {
+    fn view(&self, _: bool) -> Node<Self::Msg> {
         label![
             C!["label"],
             div![
@@ -51,7 +51,7 @@ impl Field for ToggleField {
                 div![C!["toggle-inner"], div![C!["indicator"]]],
                 div![C!["active-bg"]],
             ],
-            div![C!["label-text"], "leave me alone"]
+            div![C!["label-text"], &self.label]
         ]
     }
 }

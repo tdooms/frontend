@@ -1,7 +1,7 @@
-use crate::field::{Field, EMPTY};
 use seed::{prelude::*, *};
 use std::fmt::Debug;
-use std::str::FromStr;
+
+use crate::field::{Field, EMPTY};
 
 #[derive(Debug, Clone)]
 pub enum State<T> {
@@ -100,28 +100,26 @@ impl<T: ToString + Clone + PartialEq + Debug> Field for InputField<T> {
     }
 
     fn value(&self) -> Self::Value {
-        (!self.value.is_empty())
-            .then(|| ())
-            .and_then(|_| (self.validator)(&self.value).ok())
+        match self.value.is_empty() {
+            true => None,
+            false => (self.validator)(&self.value).ok(),
+        }
     }
 
     fn has_changed(&self) -> bool {
-        self.value
-            != match &self.initial {
-                Some(x) => x.to_string(),
-                None => String::new(),
-            }
+        match &self.initial {
+            Some(x) => x.to_string() != self.value,
+            None => !self.value.is_empty(),
+        }
     }
 
     fn view(&self, disabled: bool) -> Node<Self::Msg> {
-        let (danger, error) = match (self.untouched, self.optional, self.value.is_empty()) {
-            (true, _, _) | (_, true, true) => (false, String::new()),
-            (false, false, true) => (true, EMPTY.to_owned()),
-            (false, _, false) => match (self.validator)(&self.value) {
-                Ok(_) => (false, String::new()),
-                Err(err) => (true, err),
-            },
+        let error = match (self.untouched, self.optional, self.value.is_empty()) {
+            (true, _, _) | (_, true, true) => None,
+            (false, false, true) => Some(EMPTY.to_owned()),
+            (false, _, false) => (self.validator)(&self.value).err(),
         };
+        let danger = error.is_some();
 
         div![
             C!["field"],
@@ -143,7 +141,7 @@ impl<T: ToString + Clone + PartialEq + Debug> Field for InputField<T> {
                 ],
                 IF![danger => span![C!["icon is-small is-right"], i![C!["fas", "fa-exclamation-triangle"]]]],
             ],
-            p![C!["help", "is-danger"], error],
+            p![C!["help", "is-danger"], error.unwrap_or_default()],
         ]
     }
 }

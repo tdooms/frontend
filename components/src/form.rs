@@ -8,7 +8,7 @@ pub trait Form {
     fn reset(&mut self);
 
     fn value(&self) -> Self::Value;
-    fn view(&self) -> Node<Self::Msg>;
+    fn view(&self) -> Vec<Node<Self::Msg>>;
 
     fn has_changed(&self) -> bool;
 }

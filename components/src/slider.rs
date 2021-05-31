@@ -1,6 +1,5 @@
 use crate::field::Field;
 use seed::{prelude::*, *};
-use std::ops::Range;
 
 pub struct SliderField {
     label: String,
@@ -51,7 +50,7 @@ impl Field for SliderField {
         self.value != self.initial
     }
 
-    fn view(&self, disabled: bool) -> Node<Self::Msg> {
+    fn view(&self, _: bool) -> Node<Self::Msg> {
         div![
             C!["field"],
             label![C!["label"], &self.label],

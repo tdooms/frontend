@@ -101,7 +101,7 @@ impl Field for SelectField {
                 div![
                     C![
                         "select",
-                        IF!(self.value.is_none() && !self.optional => "is-danger")
+                        IF!(!self.untouched && self.value.is_none() && !self.optional => "is-danger")
                     ],
                     select![
                         IF!(readonly => attrs! {At::Disabled => ""}),

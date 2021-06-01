@@ -10,7 +10,7 @@ fn msg_enum(fields: &[FieldInfo]) -> TokenStream {
     let mapper = |field: &FieldInfo| {
         let msg_name = &field.msg_name;
         let ty = &field.ty;
-        quote! { #msg_name(<InputField<#ty> as Field>::Msg) }
+        quote! { #msg_name(<frontend::InputField<#ty> as frontend::Field>::Msg) }
     };
 
     let defs = fields.iter().map(mapper);
@@ -20,7 +20,7 @@ fn msg_enum(fields: &[FieldInfo]) -> TokenStream {
 fn form_struct(fields: &[FieldInfo], form_name: &Ident) -> TokenStream {
     let mapper = |field: &FieldInfo| {
         let name = &field.name;
-        quote! { #name: InputField<String> }
+        quote! { #name: frontend::InputField<String> }
     };
 
     let defs = fields.iter().map(mapper);
@@ -34,7 +34,7 @@ fn form_fn(form_name: &Ident) -> TokenStream {
 fn new_fn(fields: &[FieldInfo], form_name: &Ident) -> TokenStream {
     let mapper = |field: &FieldInfo| {
         let name = &field.name;
-        quote! {#name: InputField::string(stringify!(name)) }
+        quote! {#name: frontend::InputField::string(stringify!(name)) }
     };
 
     let defs = fields.iter().map(mapper);
@@ -147,9 +147,11 @@ fn derive_form_trait(fields: &[FieldInfo], name: &Ident) -> proc_macro::TokenStr
 
     let expanded = quote! {
 
-        use fields::{InputField, Field};
+        extern crate frontend;
+        extern crate seed;
+
         use seed::prelude::{Node, Orders, MessageMapper};
-        use forms::Form;
+        use frontend::Field;
 
         #msg_enum
         #form_struct

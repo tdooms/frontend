@@ -1,2 +1,2 @@
 [workspace]
-members = ["components", "form-macro", "frontend_test"]
+members = ["components", "form-macro", "frontend_test", "frontend"]

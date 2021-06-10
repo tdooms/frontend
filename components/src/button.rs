@@ -15,43 +15,43 @@ pub struct Button<Msg> {
 
 impl<Msg: 'static> Button<Msg> {
     pub fn create(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::custom("create", "is-success", "fa-plus", on_click).light()
+        Self::custom("create", "is-success", "fa-plus", on_click)
     }
 
     pub fn confirm(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::custom("confirm", "is-success", "fa-check", on_click).light()
+        Self::custom("confirm", "is-success", "fa-check", on_click)
     }
 
     pub fn delete(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::custom("delete", "is-danger", "fa-times", on_click).light()
+        Self::custom("delete", "is-danger", "fa-times", on_click)
     }
 
     pub fn trash(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::custom("", "is-danger", "fa-trash", on_click).light()
+        Self::custom("", "is-danger", "fa-trash", on_click)
     }
 
     pub fn save(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::custom("", "is-success", "fa-save", on_click).light()
+        Self::custom("", "is-success", "fa-save", on_click)
     }
 
     pub fn play(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::custom("play", "is-success", "fa-play", on_click).light()
+        Self::custom("play", "is-success", "fa-play", on_click)
     }
 
     pub fn stop(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::custom("stop", "is-danger", "fa-square", on_click).light()
+        Self::custom("stop", "is-danger", "fa-square", on_click)
     }
 
     pub fn pause(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::custom("pause", "", "fa-pause", on_click).light()
+        Self::custom("pause", "", "fa-pause", on_click)
     }
 
     pub fn resume(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::custom("resume", "", "fa-play", on_click).light()
+        Self::custom("resume", "", "fa-play", on_click)
     }
 
     pub fn next(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::custom("next", "is-success", "fa-angle-double-right", on_click).light()
+        Self::custom("next", "is-success", "fa-angle-double-right", on_click)
     }
 
     pub fn custom(
@@ -93,13 +93,14 @@ impl<Msg: 'static> Button<Msg> {
                 "button",
                 &self.style,
                 IF!(self.large => "is-large"),
-                IF![self.outlined => "is-outlined"]
+                IF!(self.outlined => "is-outlined"),
+                IF!(self.light => "is-light")
             ],
             ev(Ev::Click, move |_| func()),
-            attrs! {At::Disabled => disabled.as_at_value()},
-            IF!(hidden => style! {St::Display => "none"}),
+            attrs! { At::Disabled => disabled.as_at_value()},
+            IF!(hidden => style! { St::Display => "none" }),
             span![
-                C!["icon", IF![!self.large => "is-small"]],
+                C!["icon", IF!(!self.large => "is-small")],
                 i![C!["fas", &self.icon]]
             ],
             IF!(!self.text.is_empty() => span![&self.text])

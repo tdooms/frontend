@@ -8,8 +8,6 @@ pub struct Button<Msg> {
 
     large: bool,
     outlined: bool,
-    disabled: bool,
-    hidden: bool,
 
     on_click: Rc<dyn Fn() -> Msg>,
 }
@@ -67,13 +65,21 @@ impl<Msg: 'static> Button<Msg> {
             icon: icon.into(),
             large: false,
             outlined: false,
-            disabled: false,
-            hidden: false,
             on_click: Rc::new(on_click),
         }
     }
 
-    pub fn view(&self) -> Node<Msg> {
+    pub fn outlined(mut self) -> Self {
+        self.outlined = true;
+        self
+    }
+
+    pub fn large(mut self) -> Self {
+        self.large = true;
+        self
+    }
+
+    fn view(&self, hidden: bool, disabled: bool) -> Node<Msg> {
         let func = self.on_click.clone();
         button![
             C![
@@ -83,8 +89,8 @@ impl<Msg: 'static> Button<Msg> {
                 IF![self.outlined => "is-outlined"]
             ],
             ev(Ev::Click, move |_| func()),
-            attrs! {At::Disabled => self.disabled.as_at_value()},
-            IF!(self.hidden => style! {St::Display => "none"}),
+            attrs! {At::Disabled => disabled.as_at_value()},
+            IF!(hidden => style! {St::Display => "none"}),
             span![
                 C!["icon", IF![!self.large => "is-small"]],
                 i![C!["fas", &self.icon]]
@@ -93,35 +99,15 @@ impl<Msg: 'static> Button<Msg> {
         ]
     }
 
-    pub fn disable(mut self, disabled: bool) -> Self {
-        self.disabled = disabled;
-        self
+    pub fn disabled(&self, disabled: bool) -> Node<Msg> {
+        self.view(false, disabled)
     }
 
-    pub fn hide(mut self, hidden: bool) -> Self {
-        self.hidden = hidden;
-        self
+    pub fn hidden(&self, hidden: bool) -> Node<Msg> {
+        self.view(hidden, false)
     }
 
-    pub fn outline(mut self, outlined: bool) -> Self {
-        self.outlined = outlined;
-        self
-    }
-
-    pub fn large(mut self) -> Self {
-        self.large = true;
-        self
-    }
-
-    pub fn disabled(self) -> Self {
-        self.disable(true)
-    }
-
-    pub fn hidden(self) -> Self {
-        self.hide(true)
-    }
-
-    pub fn outlined(self) -> Self {
-        self.outline(true)
+    pub fn shown(&self) -> Node<Msg> {
+        self.view(false, false)
     }
 }

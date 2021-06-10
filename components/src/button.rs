@@ -12,42 +12,46 @@ pub struct Button<Msg> {
 
 impl<Msg: 'static> Button<Msg> {
     pub fn create(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::new("create", "is-success", "fa-plus", on_click)
+        Self::custom("create", "is-success", "fa-plus", on_click)
     }
 
     pub fn confirm(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::new("confirm", "is-success", "fa-check", on_click)
+        Self::custom("confirm", "is-success", "fa-check", on_click)
     }
 
     pub fn delete(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::new("delete", "is-danger", "fa-times", on_click)
+        Self::custom("delete", "is-danger", "fa-times", on_click)
     }
 
     pub fn trash(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::new("", "is-danger", "fa-trash", on_click)
+        Self::custom("", "is-danger", "fa-trash", on_click)
     }
 
     pub fn save(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::new("", "is-success", "fa-save", on_click)
+        Self::custom("", "is-success", "fa-save", on_click)
     }
 
     pub fn play(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::new("play", "is-success", "fa-play", on_click)
+        Self::custom("play", "is-success", "fa-play", on_click)
     }
 
     pub fn stop(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::new("stop", "is-danger", "fa-square", on_click)
+        Self::custom("stop", "is-danger", "fa-square", on_click)
     }
 
     pub fn pause(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::new("pause", "is-light", "fa-pause", on_click)
+        Self::custom("pause", "is-light", "fa-pause", on_click)
     }
 
     pub fn resume(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::new("resume", "is-light", "fa-play", on_click)
+        Self::custom("resume", "is-light", "fa-play", on_click)
     }
 
-    pub fn new(
+    pub fn next(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
+        Self::custom("next", "is-success", "fa-play", on_click)
+    }
+
+    pub fn custom(
         text: &'static str,
         style: &'static str,
         icon: &'static str,

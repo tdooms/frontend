@@ -51,7 +51,7 @@ impl<Msg: 'static> Button<Msg> {
     }
 
     pub fn next(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::custom("next", "is-success", "fa-angle-double-right", on_click)
+        Self::custom("next", "is-success", "fa-forward", on_click)
     }
 
     pub fn custom(

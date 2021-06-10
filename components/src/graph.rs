@@ -15,7 +15,13 @@ impl Graph {
         Self { id: id.into() }
     }
 
-    pub fn update(msg: Msg, _: &mut impl Orders<Msg>) {}
+    pub fn redraw() {}
+
+    pub fn update(msg: Msg, _: &mut impl Orders<Msg>) {
+        match msg {
+            Msg::Resize => {}
+        }
+    }
 
     pub fn view(&self) -> Node<Msg> {
         canvas![attrs! {At::Id => &self.id}]

@@ -1,5 +1,4 @@
 use seed::{prelude::*, *};
-use std::marker::PhantomData;
 use std::rc::Rc;
 
 pub struct Button<Msg> {
@@ -79,7 +78,7 @@ impl<Msg: 'static> Button<Msg> {
         button![
             C![
                 "button",
-                self.style,
+                &self.style,
                 IF!(self.large => "is-large"),
                 IF![self.outlined => "is-outlined"]
             ],
@@ -88,24 +87,24 @@ impl<Msg: 'static> Button<Msg> {
             IF!(self.hidden => style! {St::Display => "none"}),
             span![
                 C!["icon", IF![!self.large => "is-small"]],
-                i![C!["fas", self.icon]]
+                i![C!["fas", &self.icon]]
             ],
-            IF!(!self.text.is_empty() => span![self.text])
+            IF!(!self.text.is_empty() => span![&self.text])
         ]
     }
 
-    pub fn disable(mut self, disable: bool) -> Self {
-        self.disable = disable;
+    pub fn disable(mut self, disabled: bool) -> Self {
+        self.disabled = disabled;
         self
     }
 
-    pub fn hide(mut self, hide: bool) -> Self {
-        self.hide = hide;
+    pub fn hide(mut self, hidden: bool) -> Self {
+        self.hidden = hidden;
         self
     }
 
-    pub fn outline(mut self, outline: bool) -> Self {
-        self.outline = outline;
+    pub fn outline(mut self, outlined: bool) -> Self {
+        self.outlined = outlined;
         self
     }
 
@@ -114,15 +113,15 @@ impl<Msg: 'static> Button<Msg> {
         self
     }
 
-    pub fn disabled(mut self) -> Self {
+    pub fn disabled(self) -> Self {
         self.disable(true)
     }
 
-    pub fn hidden(mut self) -> Self {
+    pub fn hidden(self) -> Self {
         self.hide(true)
     }
 
-    pub fn outlined(mut self) -> Self {
+    pub fn outlined(self) -> Self {
         self.outline(true)
     }
 }

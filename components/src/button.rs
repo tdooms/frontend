@@ -3,9 +3,14 @@ use std::marker::PhantomData;
 use std::rc::Rc;
 
 pub struct Button<Msg> {
-    text: &'static str,
-    style: &'static str,
-    icon: &'static str,
+    text: String,
+    style: String,
+    icon: String,
+
+    large: bool,
+    outlined: bool,
+    disabled: bool,
+    hidden: bool,
 
     on_click: Rc<dyn Fn() -> Msg>,
 }
@@ -48,44 +53,76 @@ impl<Msg: 'static> Button<Msg> {
     }
 
     pub fn next(on_click: impl Fn() -> Msg + Clone + 'static) -> Self {
-        Self::custom("next", "is-success", "fa-play", on_click)
+        Self::custom("next", "is-success", "fa-angle-double-right", on_click)
     }
 
     pub fn custom(
-        text: &'static str,
-        style: &'static str,
-        icon: &'static str,
+        text: impl Into<String>,
+        style: impl Into<String>,
+        icon: impl Into<String>,
         on_click: impl Fn() -> Msg + Clone + 'static,
     ) -> Self {
         Button {
-            text,
-            style,
-            icon,
+            text: text.into(),
+            style: style.into(),
+            icon: icon.into(),
+            large: false,
+            outlined: false,
+            disabled: false,
+            hidden: false,
             on_click: Rc::new(on_click),
         }
     }
 
-    pub fn view(&self, disabled: bool, hidden: bool) -> Node<Msg> {
+    pub fn view(&self) -> Node<Msg> {
         let func = self.on_click.clone();
         button![
-            C!["button", self.style],
+            C![
+                "button",
+                self.style,
+                IF!(self.large => "is-large"),
+                IF![self.outlined => "is-outlined"]
+            ],
             ev(Ev::Click, move |_| func()),
-            attrs! {At::Disabled => disabled.as_at_value()},
-            IF!(hidden => style! {St::Display => "none"}),
-            span![C!["icon", "is-small"], i![C!["fas", self.icon]]],
+            attrs! {At::Disabled => self.disabled.as_at_value()},
+            IF!(self.hidden => style! {St::Display => "none"}),
+            span![
+                C!["icon", IF![!self.large => "is-small"]],
+                i![C!["fas", self.icon]]
+            ],
             IF!(!self.text.is_empty() => span![self.text])
         ]
     }
 
-    pub fn show(&self) -> Node<Msg> {
-        self.view(false, false)
+    pub fn disable(mut self, disable: bool) -> Self {
+        self.disable = disable;
+        self
     }
 
-    pub fn disabled(&self) -> Node<Msg> {
-        self.view(true, false)
+    pub fn hide(mut self, hide: bool) -> Self {
+        self.hide = hide;
+        self
     }
 
-    pub fn hidden(&self) -> Node<Msg> {
-        self.view(true, true)
+    pub fn outline(mut self, outline: bool) -> Self {
+        self.outline = outline;
+        self
+    }
+
+    pub fn large(mut self) -> Self {
+        self.large = true;
+        self
+    }
+
+    pub fn disabled(mut self) -> Self {
+        self.disable(true)
+    }
+
+    pub fn hidden(mut self) -> Self {
+        self.hide(true)
+    }
+
+    pub fn outlined(mut self) -> Self {
+        self.outline(true)
     }
 }

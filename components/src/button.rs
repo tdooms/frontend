@@ -9,6 +9,8 @@ pub struct Button<Msg> {
     large: bool,
     outlined: bool,
     light: bool,
+    fullwidth: bool,
+    rounded: bool,
 
     on_click: Rc<dyn Fn() -> Msg>,
 }
@@ -67,6 +69,8 @@ impl<Msg: 'static> Button<Msg> {
             large: false,
             outlined: false,
             light: false,
+            fullwidth: false,
+            rounded: false,
             on_click: Rc::new(on_click),
         }
     }
@@ -86,6 +90,16 @@ impl<Msg: 'static> Button<Msg> {
         self
     }
 
+    pub fn fullwidth(mut self) -> Self {
+        self.fullwidth = true;
+        self
+    }
+
+    pub fn rounded(mut self) -> Self {
+        self.rounded = true;
+        self
+    }
+
     fn view(&self, hidden: bool, disabled: bool) -> Node<Msg> {
         let func = self.on_click.clone();
         button![
@@ -94,7 +108,8 @@ impl<Msg: 'static> Button<Msg> {
                 &self.style,
                 IF!(self.large => "is-large"),
                 IF!(self.outlined => "is-outlined"),
-                IF!(self.light => "is-light")
+                IF!(self.light => "is-light"),
+                IF![self.fullwidth => "is-fullwidth"]
             ],
             ev(Ev::Click, move |_| func()),
             attrs! { At::Disabled => disabled.as_at_value()},
